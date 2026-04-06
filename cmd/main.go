@@ -6,7 +6,6 @@ import (
 )
 
 func main() {
-	log.Println("papelane-cli is running")
 	rootCmd := commands.RootCmd
 	commands.Init(rootCmd)
 
