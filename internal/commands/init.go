@@ -3,7 +3,10 @@ package commands
 import (
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 	"papelane-cli/internal/config"
+	"papelane-cli/internal/database"
 	"papelane-cli/internal/telegrampkg"
 
 	"github.com/spf13/cobra"
@@ -23,21 +26,34 @@ var initCmd = &cobra.Command{
 			log.Fatalf("Error while execute init cmd: %v", err)
 		}
 
+		cfgDir, err := os.UserConfigDir()
+		if err != nil {
+			log.Fatalf("Error getting user config dir: %v", err)
+		}
+		appDir := filepath.Join(cfgDir, "papelane-cli")
+		if err := os.MkdirAll(appDir, 0755); err != nil {
+			log.Fatalf("Error creating app config dir: %v", err)
+		}
+
 		cfg := config.Config{
-			ApiId:         apiId,
-			ApiHash:       apiHash,
-			ChatId:        chatId,
-			BotToken:      botToken,
-			Port:          port,
-			StopAlways:    stopAlways,
-			Image:         "aiogram/telegram-bot-api:latest",
-			ContainerName: "papelane-telegram-bot-api",
-			Volume:        "papelane-telegram-bot-api-data",
+			ApiId:          apiId,
+			ApiHash:        apiHash,
+			ChatId:         chatId,
+			BotToken:       botToken,
+			Port:           port,
+			StopAlways:     stopAlways,
+			Image:          "aiogram/telegram-bot-api:latest",
+			ContainerName:  "papelane-telegram-bot-api",
+			Volume:         "papelane-telegram-bot-api-data",
+			DbPath:         filepath.Join(appDir, "papelane.sql"),
 		}
 		err = config.WriteOut(&cfg)
 		if err != nil {
 			log.Fatalf("Error while execute init cmd: %v", err)
 		}
+
+		db = database.New(cfg.DbPath)
+
 		client = telegrampkg.NewClient(botToken, fmt.Sprintf("http://localhost:%d", port))
 		err = client.Ping()
 		if err != nil {

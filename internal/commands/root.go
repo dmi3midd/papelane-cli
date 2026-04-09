@@ -1,13 +1,19 @@
 package commands
 
 import (
+	"fmt"
+
+	"papelane-cli/internal/config"
+	"papelane-cli/internal/database"
 	"papelane-cli/internal/telegrampkg"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var (
 	client *telegrampkg.Client
+	db     database.Service
 )
 
 var RootCmd = &cobra.Command{
@@ -20,6 +26,27 @@ var RootCmd = &cobra.Command{
 		It provides a persistent REPL environment where you can manage files using familiar shell commands like 'cd', 'ls', and 'mkdir', 
 		supports multiple storage profiles for different bots, 
 		and ensures efficient, memory-friendly data streaming of files up to 2GB directly through a local Docker-managed proxy.`,
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		if cmd.Name() == "init" {
+			return nil
+		}
+		if err := config.ReadIn(); err != nil {
+			return err
+		}
+
+		dbPath := viper.GetString("dbPath")
+		if dbPath != "" {
+			db = database.New(dbPath)
+		}
+
+		botToken := viper.GetString("botToken")
+		port := viper.GetInt("port")
+		if botToken != "" && port != 0 {
+			client = telegrampkg.NewClient(botToken, fmt.Sprintf("http://localhost:%d", port))
+		}
+
+		return nil
+	},
 }
 
 func Init(rootCmd *cobra.Command) {

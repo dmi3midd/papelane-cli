@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/spf13/viper"
 )
@@ -16,11 +18,30 @@ type Config struct {
 	Image         string `yaml:"image"`
 	ContainerName string `yaml:"containerName"`
 	Volume        string `yaml:"volume"`
+	DbPath        string `yaml:"dbPath"`
+}
+
+func getAppDir() (string, error) {
+	cfgDir, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+	appDir := filepath.Join(cfgDir, "papelane-cli")
+	return appDir, nil
 }
 
 func WriteOut(c *Config) error {
+	appDir, err := getAppDir()
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(appDir, 0755); err != nil {
+		return err
+	}
+
 	viper.SetConfigName("papelane.config")
 	viper.SetConfigType("yaml")
+	viper.AddConfigPath(appDir)
 	viper.AddConfigPath(".")
 
 	viper.Set("apiId", c.ApiId)
@@ -32,8 +53,10 @@ func WriteOut(c *Config) error {
 	viper.Set("image", c.Image)
 	viper.Set("containerName", c.ContainerName)
 	viper.Set("volume", c.Volume)
+	viper.Set("dbPath", c.DbPath)
 
-	err := viper.SafeWriteConfigAs("papelane.config.yaml")
+	configPath := filepath.Join(appDir, "papelane.config.yaml")
+	err = viper.WriteConfigAs(configPath)
 	if err != nil {
 		return fmt.Errorf("error while writing config: %w", err)
 	}
@@ -41,8 +64,14 @@ func WriteOut(c *Config) error {
 }
 
 func ReadIn() error {
+	appDir, err := getAppDir()
+	if err != nil {
+		return err
+	}
+
 	viper.SetConfigName("papelane.config")
 	viper.SetConfigType("yaml")
+	viper.AddConfigPath(appDir)
 	viper.AddConfigPath(".")
 
 	if err := viper.ReadInConfig(); err != nil {
