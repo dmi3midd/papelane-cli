@@ -1,7 +1,13 @@
 package commands
 
 import (
+	"papelane-cli/internal/telegrampkg"
+
 	"github.com/spf13/cobra"
+)
+
+var (
+	client *telegrampkg.Client
 )
 
 var RootCmd = &cobra.Command{
