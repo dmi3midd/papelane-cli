@@ -1,12 +1,11 @@
 package dockerpkg
 
-import "log"
+import "fmt"
 
-func RunDockerPipeline() {
+func RunDockerPipeline() error {
 	cond := IsDockerInstalled()
 	if !cond {
-		log.Printf("Install docker first!")
-		return
+		return fmt.Errorf("docker is not installed")
 	}
 	cond = IsImageInstalled()
 	if !cond {
@@ -16,4 +15,5 @@ func RunDockerPipeline() {
 	if !cond {
 		RunDockerContainer()
 	}
+	return nil
 }

@@ -2,9 +2,7 @@ package dockerpkg
 
 import (
 	"fmt"
-	"log"
 	"os/exec"
-	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -15,19 +13,7 @@ func DoesContainerExist() bool {
 	return cmd.Run() == nil
 }
 
-func IsContainerRunning() bool {
-	containerName := viper.GetString("containerName")
-	cmd := exec.Command("docker", "inspect", "-f", "{{.State.Running}}", containerName)
-	byteOut, err := cmd.Output()
-	if err != nil {
-		return false
-	}
-
-	isRunning := strings.TrimSpace(string(byteOut))
-	return isRunning == "true"
-}
-
-func RunDockerContainer() {
+func RunDockerContainer() error {
 	port := viper.GetInt("port")
 	containerName := viper.GetString("containerName")
 	volume := viper.GetString("volume")
@@ -47,8 +33,8 @@ func RunDockerContainer() {
 
 	cmd := exec.Command("docker", args...)
 	if err := cmd.Run(); err != nil {
-		log.Printf("Error while pulling image: %v\n", err)
-		return
+		return fmt.Errorf("error while running container: %v", err)
 	}
-	log.Println("Container run successfully.")
+	fmt.Println("Container run successfully.")
+	return nil
 }
