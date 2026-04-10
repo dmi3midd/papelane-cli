@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"log"
 	"strconv"
@@ -10,6 +9,7 @@ import (
 
 	"papelane-cli/internal/migrations"
 
+	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
 	goose "github.com/pressly/goose/v3"
 )
@@ -23,10 +23,13 @@ type Service interface {
 	// Close terminates the database connection.
 	// It returns an error if the connection cannot be closed.
 	Close() error
+
+	// GetDB returns the underlying sqlx.DB instance for direct database operations.
+	GetDB() *sqlx.DB
 }
 
 type service struct {
-	db     *sql.DB
+	db     *sqlx.DB
 	dbPath string
 }
 
@@ -40,7 +43,7 @@ func New(DBPath string) Service {
 		return dbInstance
 	}
 
-	db, err := sql.Open("sqlite3", DBPath)
+	db, err := sqlx.Open("sqlite3", DBPath)
 	if err != nil {
 		// This will not be a connection error, but a DSN parse error or
 		// another initialization error.
@@ -52,7 +55,7 @@ func New(DBPath string) Service {
 	if err := goose.SetDialect("sqlite3"); err != nil {
 		log.Fatal(err)
 	}
-	if err := goose.Up(db, "."); err != nil {
+	if err := goose.Up(db.DB, "."); err != nil {
 		log.Fatal(err)
 	}
 
@@ -121,4 +124,9 @@ func (s *service) Health() map[string]string {
 func (s *service) Close() error {
 	log.Printf("Disconnected from database: %s", s.dbPath)
 	return s.db.Close()
+}
+
+// GetDB returns the underlying sqlx.DB instance for direct database operations.
+func (s *service) GetDB() *sqlx.DB {
+	return s.db
 }
