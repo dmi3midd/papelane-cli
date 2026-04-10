@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"papelane-cli/internal/config"
 	"papelane-cli/internal/database"
 	"papelane-cli/internal/telegrampkg"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
@@ -36,18 +36,28 @@ var initCmd = &cobra.Command{
 		}
 
 		cfg := config.Config{
-			ApiId:          apiId,
-			ApiHash:        apiHash,
-			ChatId:         chatId,
-			BotToken:       botToken,
-			Port:           port,
-			StopAlways:     stopAlways,
-			Image:          "aiogram/telegram-bot-api:latest",
-			ContainerName:  "papelane-telegram-bot-api",
-			Volume:         "papelane-telegram-bot-api-data",
-			DbPath:         filepath.Join(appDir, "papelane.sql"),
+			ApiId:         apiId,
+			ApiHash:       apiHash,
+			ChatId:        chatId,
+			BotToken:      botToken,
+			Port:          port,
+			StopAlways:    stopAlways,
+			Image:         "aiogram/telegram-bot-api:latest",
+			ContainerName: "papelane-telegram-bot-api",
+			Volume:        "papelane-telegram-bot-api-data",
+			DbPath:        filepath.Join(appDir, "papelane.sql"),
 		}
-		err = config.WriteOut(&cfg)
+
+		currDirCfg := config.CurrDirConfig{
+			CurrentDir: "/",
+		}
+
+		err = config.WriteOutGlobalCfg(&cfg)
+		if err != nil {
+			log.Fatalf("Error while execute init cmd: %v", err)
+		}
+
+		err = config.WriteOutCurrDirCfg(&currDirCfg)
 		if err != nil {
 			log.Fatalf("Error while execute init cmd: %v", err)
 		}

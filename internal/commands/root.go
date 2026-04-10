@@ -8,7 +8,6 @@ import (
 	"papelane-cli/internal/telegrampkg"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -30,21 +29,29 @@ var RootCmd = &cobra.Command{
 		if cmd.Name() == "init" {
 			return nil
 		}
-		if err := config.ReadIn(); err != nil {
+		if err := config.ReadInGlobalCfg(); err != nil {
+			fmt.Printf("Error reading global config: %v\n", err)
+			return err
+		}
+		if err := config.ReadInCurrDirCfg(); err != nil {
+			fmt.Printf("Error reading current directory config: %v\n", err)
 			return err
 		}
 
-		dbPath := viper.GetString("dbPath")
+		dbPath := config.GlobalConfig.GetString("dbPath")
 		if dbPath != "" {
 			db = database.New(dbPath)
 		}
 
-		botToken := viper.GetString("botToken")
-		port := viper.GetInt("port")
+		botToken := config.GlobalConfig.GetString("botToken")
+		port := config.GlobalConfig.GetInt("port")
 		if botToken != "" && port != 0 {
 			client = telegrampkg.NewClient(botToken, fmt.Sprintf("http://localhost:%d", port))
 		}
 
+		return nil
+	},
+	PostRunE: func(cmd *cobra.Command, args []string) error {
 		return nil
 	},
 }
@@ -53,6 +60,7 @@ func Init(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(initCmd)
 	rootCmd.AddCommand(checkCmd)
 	rootCmd.AddCommand(pingCmd)
+	rootCmd.AddCommand(currCmd)
 
 	initCmd.Flags().String("apid", "", "Your TELEGRAM_API_ID")
 	initCmd.Flags().String("apih", "", "Your TELEGRAM_API_HASH")

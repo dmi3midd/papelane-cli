@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
-
-	"github.com/spf13/viper"
+	"papelane-cli/internal/config"
 )
 
 func IsImageInstalled() bool {
-	image := viper.GetString("image")
+	image := config.GlobalConfig.GetString("image")
 	cmd := exec.Command("docker", "image", "inspect", image)
 	if err := cmd.Run(); err != nil {
 		return false
@@ -18,7 +17,7 @@ func IsImageInstalled() bool {
 }
 
 func PullImage() {
-	image := viper.GetString("image")
+	image := config.GlobalConfig.GetString("image")
 	cmd := exec.Command("docker", "pull", image)
 	// cmd.Stdout = os.Stdout
 	// cmd.Stderr = os.Stderr

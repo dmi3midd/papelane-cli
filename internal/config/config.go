@@ -8,6 +8,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	CurrentDirConfig *viper.Viper = viper.New()
+	GlobalConfig     *viper.Viper = viper.New()
+)
+
 type Config struct {
 	ApiId         string `yaml:"apiId"`
 	ApiHash       string `yaml:"apiHash"`
@@ -21,6 +26,10 @@ type Config struct {
 	DbPath        string `yaml:"dbPath"`
 }
 
+type CurrDirConfig struct {
+	CurrentDir string `yaml:"currentDir"`
+}
+
 func getAppDir() (string, error) {
 	cfgDir, err := os.UserConfigDir()
 	if err != nil {
@@ -30,7 +39,7 @@ func getAppDir() (string, error) {
 	return appDir, nil
 }
 
-func WriteOut(c *Config) error {
+func WriteOutGlobalCfg(c *Config) error {
 	appDir, err := getAppDir()
 	if err != nil {
 		return err
@@ -39,43 +48,79 @@ func WriteOut(c *Config) error {
 		return err
 	}
 
-	viper.SetConfigName("papelane.config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(appDir)
-	viper.AddConfigPath(".")
+	GlobalConfig.SetConfigName("papelane.config")
+	GlobalConfig.SetConfigType("yaml")
+	GlobalConfig.AddConfigPath(appDir)
+	GlobalConfig.AddConfigPath(".")
 
-	viper.Set("apiId", c.ApiId)
-	viper.Set("apiHash", c.ApiHash)
-	viper.Set("chatId", c.ChatId)
-	viper.Set("botToken", c.BotToken)
-	viper.Set("port", c.Port)
-	viper.Set("stopAlways", c.StopAlways)
-	viper.Set("image", c.Image)
-	viper.Set("containerName", c.ContainerName)
-	viper.Set("volume", c.Volume)
-	viper.Set("dbPath", c.DbPath)
+	GlobalConfig.Set("apiId", c.ApiId)
+	GlobalConfig.Set("apiHash", c.ApiHash)
+	GlobalConfig.Set("chatId", c.ChatId)
+	GlobalConfig.Set("botToken", c.BotToken)
+	GlobalConfig.Set("port", c.Port)
+	GlobalConfig.Set("stopAlways", c.StopAlways)
+	GlobalConfig.Set("image", c.Image)
+	GlobalConfig.Set("containerName", c.ContainerName)
+	GlobalConfig.Set("volume", c.Volume)
+	GlobalConfig.Set("dbPath", c.DbPath)
 
 	configPath := filepath.Join(appDir, "papelane.config.yaml")
-	err = viper.WriteConfigAs(configPath)
+	err = GlobalConfig.WriteConfigAs(configPath)
 	if err != nil {
 		return fmt.Errorf("error while writing config: %w", err)
 	}
 	return nil
 }
 
-func ReadIn() error {
+func ReadInGlobalCfg() error {
 	appDir, err := getAppDir()
 	if err != nil {
 		return err
 	}
 
-	viper.SetConfigName("papelane.config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(appDir)
-	viper.AddConfigPath(".")
+	GlobalConfig.SetConfigName("papelane.config")
+	GlobalConfig.SetConfigType("yaml")
+	GlobalConfig.AddConfigPath(appDir)
+	GlobalConfig.AddConfigPath(".")
 
-	if err := viper.ReadInConfig(); err != nil {
+	if err := GlobalConfig.ReadInConfig(); err != nil {
 		return fmt.Errorf("error while loading config: %w", err)
+	}
+	return nil
+}
+
+func WriteOutCurrDirCfg(currDirCfg *CurrDirConfig) error {
+	CurrentDirConfig.SetConfigName("currdir.papelane.config")
+	CurrentDirConfig.SetConfigType("yaml")
+	appDir, err := getAppDir()
+	if err != nil {
+		return err
+	}
+	CurrentDirConfig.AddConfigPath(appDir)
+	CurrentDirConfig.AddConfigPath(".")
+
+	CurrentDirConfig.Set("currentDir", currDirCfg.CurrentDir)
+
+	configPath := filepath.Join(appDir, "currdir.papelane.config.yaml")
+	err = CurrentDirConfig.WriteConfigAs(configPath)
+	if err != nil {
+		return fmt.Errorf("error while writing current directory config: %w", err)
+	}
+	return nil
+}
+
+func ReadInCurrDirCfg() error {
+	appDir, err := getAppDir()
+	if err != nil {
+		return err
+	}
+	CurrentDirConfig.SetConfigName("currdir.papelane.config")
+	CurrentDirConfig.SetConfigType("yaml")
+	CurrentDirConfig.AddConfigPath(appDir)
+	CurrentDirConfig.AddConfigPath(".")
+
+	if err := CurrentDirConfig.ReadInConfig(); err != nil {
+		return fmt.Errorf("error while loading current directory config: %w", err)
 	}
 	return nil
 }

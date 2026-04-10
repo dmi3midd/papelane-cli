@@ -3,23 +3,22 @@ package dockerpkg
 import (
 	"fmt"
 	"os/exec"
-
-	"github.com/spf13/viper"
+	"papelane-cli/internal/config"
 )
 
 func DoesContainerExist() bool {
-	containerName := viper.GetString("containerName")
+	containerName := config.GlobalConfig.GetString("containerName")
 	cmd := exec.Command("docker", "inspect", containerName)
 	return cmd.Run() == nil
 }
 
 func RunDockerContainer() error {
-	port := viper.GetInt("port")
-	containerName := viper.GetString("containerName")
-	volume := viper.GetString("volume")
-	apiId := viper.GetString("apiId")
-	apiHash := viper.GetString("apiHash")
-	image := viper.GetString("image")
+	port := config.GlobalConfig.GetInt("port")
+	containerName := config.GlobalConfig.GetString("containerName")
+	volume := config.GlobalConfig.GetString("volume")
+	apiId := config.GlobalConfig.GetString("apiId")
+	apiHash := config.GlobalConfig.GetString("apiHash")
+	image := config.GlobalConfig.GetString("image")
 	args := []string{
 		"run", "-d",
 		"-p", fmt.Sprintf("%d:8081", port),
