@@ -49,7 +49,7 @@ var initCmd = &cobra.Command{
 		}
 
 		currDirCfg := config.CurrDirConfig{
-			CurrentDir: "/",
+			CurrentDir: "root",
 		}
 
 		err = config.WriteOutGlobalCfg(&cfg)

@@ -5,14 +5,16 @@ import (
 
 	"papelane-cli/internal/config"
 	"papelane-cli/internal/database"
+	"papelane-cli/internal/repositories"
 	"papelane-cli/internal/telegrampkg"
 
 	"github.com/spf13/cobra"
 )
 
 var (
-	client *telegrampkg.Client
-	db     database.Service
+	client     *telegrampkg.Client
+	db         database.Service
+	folderRepo *repositories.FolderRepository
 )
 
 var RootCmd = &cobra.Command{
@@ -43,6 +45,8 @@ var RootCmd = &cobra.Command{
 			db = database.New(dbPath)
 		}
 
+		folderRepo = repositories.NewFolderRepository(db.GetDB())
+
 		botToken := config.GlobalConfig.GetString("botToken")
 		port := config.GlobalConfig.GetInt("port")
 		if botToken != "" && port != 0 {
@@ -61,6 +65,7 @@ func Init(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(checkCmd)
 	rootCmd.AddCommand(pingCmd)
 	rootCmd.AddCommand(currCmd)
+	rootCmd.AddCommand(toRootCmd)
 
 	initCmd.Flags().String("apid", "", "Your TELEGRAM_API_ID")
 	initCmd.Flags().String("apih", "", "Your TELEGRAM_API_HASH")
