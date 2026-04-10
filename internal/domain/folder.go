@@ -20,6 +20,9 @@ type FolderRepository interface {
 	// GetById returns a folder by its ID.
 	// It returns the ErrFolderNotFound error if the folder does not exist.
 	GetById(ctx context.Context, id string) (*Folder, error)
+	// GetByNameAndParentId returns a folder by its name and parent ID.
+	// It returns the ErrFolderNotFound error if the folder does not exist.
+	GetByNameAndParentId(ctx context.Context, name string, parentId string) (*Folder, error)
 	// GetByParentId returns a list of folders by their parent ID.
 	// It returns an empty slice if no folders are found with the given parent ID.
 	GetByParentId(ctx context.Context, parrentId string) ([]Folder, error)

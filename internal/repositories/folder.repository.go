@@ -41,6 +41,24 @@ func (r *FolderRepository) GetById(ctx context.Context, id string) (*domain.Fold
 	return &folder, nil
 }
 
+func (r *FolderRepository) GetByNameAndParentId(ctx context.Context, name string, parentId string) (*domain.Folder, error) {
+	op := "FolderRepository.GetByNameAndParentId"
+	query := `
+	SELECT id, name, parent_id, created_at, updated_at 
+	FROM folders 
+	WHERE name = $1 AND parent_id = $2
+	`
+	var folder domain.Folder
+	err := r.db.GetContext(ctx, &folder, query, name, parentId)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("%s: %w", op, ErrFolderNotFound)
+		}
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	return &folder, nil
+}
+
 func (r *FolderRepository) GetByParentId(ctx context.Context, parentId string) ([]domain.Folder, error) {
 	op := "FolderRepository.GetByParentId"
 	query := `
