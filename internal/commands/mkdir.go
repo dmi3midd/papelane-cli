@@ -1,39 +1,73 @@
 package commands
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"papelane-cli/internal/config"
+	"papelane-cli/internal/domain"
+	"papelane-cli/internal/repositories"
 	"path"
+	"strings"
+	"time"
 
+	"github.com/rs/xid"
 	"github.com/spf13/cobra"
 )
 
 // simple mkdir command for creating a new directory
 // need to add complex logic for creating a new directory like:
-// mkdir root/folder1/folder2/folder3
-// in this situation we need to create folder3 in root/folder1/folder2
-// and change current directory to root/folder1/folder2/folder3
-// and if folder1 or folder2 is not exist, we need to return an error
+// mkdir root/folder1/folder2/folder3 (abs path) or mkdir folder3 (relative path)
+// also need(optional) to add a flag for going to the newly created directory
+// now it creates a new directory in the current directory and if the flag is set, it goes to the newly created directory
 var mkdirCmd = &cobra.Command{
 	Use:   "mkdir",
 	Short: "Create a new directory",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		currentDir := config.CurrentDirConfig.GetString("currentDir")
-		if currentDir == "" {
-			fmt.Println("Current directory not set. Please run 'papelane init' to initialize the configuration.")
-			os.Exit(1)
-		}
+		currentDirName := config.CurrentDirConfig.GetString("currentDirName")
+		currentDirId := config.CurrentDirConfig.GetString("currentDirId")
 		newDir := args[0]
-		newCurrDir := path.Join(currentDir, newDir)
-		if err := config.WriteOutCurrDirCfg(&config.CurrDirConfig{
-			CurrentDir: newCurrDir,
-		}); err != nil {
-			return err
+		ctx := cmd.Context()
+		ids := strings.Split(currentDirId, string(os.PathSeparator))
+		parentId := ids[len(ids)-1]
+
+		// check if the directory already exists in the current directory
+		_, err := folderRepo.GetByNameAndParentId(ctx, newDir, parentId)
+		if err == nil {
+			return fmt.Errorf("Directory '%s' already exists in the current directory", newDir)
 		}
-		fmt.Printf("Directory '%s' created successfully.\n", newDir)
-		fmt.Printf("Current directory: %s\n", newCurrDir)
+		if err != nil && !errors.Is(err, repositories.ErrFolderNotFound) {
+			return fmt.Errorf("Failed to get directory: %v", err)
+		}
+
+		// create a new directory
+		folder := &domain.Folder{
+			Id:        xid.New().String(),
+			Name:      newDir,
+			ParentId:  parentId,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		}
+		if err := folderRepo.Create(ctx, folder); err != nil {
+			return fmt.Errorf("Failed to create directory: %v", err)
+		}
+
+		// if the flag is set, go to the newly created directory
+		if goToCurrDirFlag {
+			newCurrDirName := path.Join(currentDirName, newDir)
+			newCurrDirId := path.Join(currentDirId, folder.Id)
+			if err := config.WriteOutCurrDirCfg(&config.CurrDirConfig{
+				CurrentDirName: newCurrDirName,
+				CurrentDirId:   newCurrDirId,
+			}); err != nil {
+				return err
+			}
+			fmt.Printf("Directory '%s' created successfully.\n", newCurrDirName)
+		} else {
+			fmt.Printf("Directory '%s' created successfully.\n", path.Join(currentDirName, newDir))
+		}
+
 		return nil
 	},
 }

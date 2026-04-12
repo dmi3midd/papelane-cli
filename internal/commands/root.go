@@ -5,6 +5,7 @@ import (
 
 	"papelane-cli/internal/config"
 	"papelane-cli/internal/database"
+	"papelane-cli/internal/domain"
 	"papelane-cli/internal/repositories"
 	"papelane-cli/internal/telegrampkg"
 
@@ -14,7 +15,7 @@ import (
 var (
 	client     *telegrampkg.Client
 	db         database.Service
-	folderRepo *repositories.FolderRepository
+	folderRepo domain.FolderRepository
 )
 
 var RootCmd = &cobra.Command{
@@ -23,10 +24,7 @@ var RootCmd = &cobra.Command{
 	Long: `Papelane-CLI is a high-performance CLI utility
 		that transforms your Telegram bot into a structured cloud storage system
 		by leveraging a local SQLite database for instant file navigation 
-		and the Telegram Bot API (Local) to bypass standard 50MB upload limits. 
-		It provides a persistent REPL environment where you can manage files using familiar shell commands like 'cd', 'ls', and 'mkdir', 
-		supports multiple storage profiles for different bots, 
-		and ensures efficient, memory-friendly data streaming of files up to 2GB directly through a local Docker-managed proxy.`,
+		and the Telegram Bot API (Local) to bypass standard 50MB upload limits. `,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		if cmd.Name() == "init" {
 			return nil
@@ -60,6 +58,8 @@ var RootCmd = &cobra.Command{
 	},
 }
 
+var goToCurrDirFlag bool
+
 func Init(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(initCmd)
 	rootCmd.AddCommand(checkCmd)
@@ -74,9 +74,10 @@ func Init(rootCmd *cobra.Command) {
 	initCmd.Flags().Int("cid", 0, "Your chat id")
 	initCmd.Flags().Int("port", 8081, "Post for docker container")
 	initCmd.Flags().Bool("sa", false, "Always stop docker true or flase")
-
 	initCmd.MarkFlagRequired("apid")
 	initCmd.MarkFlagRequired("apih")
 	initCmd.MarkFlagRequired("token")
 	initCmd.MarkFlagRequired("cid")
+
+	mkdirCmd.Flags().BoolVarP(&goToCurrDirFlag, "cd", "d", false, "Go to the newly created directory")
 }
