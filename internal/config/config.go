@@ -27,7 +27,8 @@ type Config struct {
 }
 
 type CurrDirConfig struct {
-	CurrentDir string `yaml:"currentDir"`
+	CurrentDirName string `yaml:"currentDirName"`
+	CurrentDirId   string `yaml:"currentDirId"`
 }
 
 func getAppDir() (string, error) {
@@ -99,7 +100,8 @@ func WriteOutCurrDirCfg(currDirCfg *CurrDirConfig) error {
 	CurrentDirConfig.AddConfigPath(appDir)
 	CurrentDirConfig.AddConfigPath(".")
 
-	CurrentDirConfig.Set("currentDir", currDirCfg.CurrentDir)
+	CurrentDirConfig.Set("currentDirName", currDirCfg.CurrentDirName)
+	CurrentDirConfig.Set("currentDirId", currDirCfg.CurrentDirId)
 
 	configPath := filepath.Join(appDir, "currdir.papelane.config.yaml")
 	err = CurrentDirConfig.WriteConfigAs(configPath)
