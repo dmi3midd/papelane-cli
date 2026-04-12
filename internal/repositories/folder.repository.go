@@ -78,7 +78,7 @@ func (r *FolderRepository) Create(ctx context.Context, folder *domain.Folder) er
 	op := "FolderRepository.Create"
 	query := `
 	INSERT INTO folders (id, name, parent_id, created_at, updated_at) 
-	VALUES :id, :name, :parent_id, :created_at, :updated_at
+	VALUES (:id, :name, :parent_id, :created_at, :updated_at)
 	`
 	if _, err := r.db.NamedExecContext(ctx, query, folder); err != nil {
 		return fmt.Errorf("%s: %w", op, err)
