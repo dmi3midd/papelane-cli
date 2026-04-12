@@ -5,7 +5,10 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"os"
 	"papelane-cli/internal/domain"
+	"path"
+	"strings"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -72,6 +75,47 @@ func (r *FolderRepository) GetByParentId(ctx context.Context, parentId string) (
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	return folders, nil
+}
+
+func (r *FolderRepository) GetByPath(ctx context.Context, fullPath string) (*domain.Folder, error) {
+	op := "FolderRepository.GetByPath"
+
+	if fullPath == "root" {
+		return &domain.Folder{
+			Id:       "root",
+			Name:     "root",
+			ParentId: "",
+		}, nil
+	}
+
+	segments := strings.Split(path.Clean(fullPath), string(os.PathSeparator))
+	if len(segments) > 0 && segments[0] == "root" {
+		segments = segments[1:]
+	}
+
+	currParentId := "root"
+	var folder *domain.Folder
+	var err error
+
+	for _, segment := range segments {
+		if segment == "" {
+			continue
+		}
+		folder, err = r.GetByNameAndParentId(ctx, segment, currParentId)
+		if err != nil {
+			if errors.Is(err, ErrFolderNotFound) {
+				return nil, fmt.Errorf("%s: %w", op, ErrFolderNotFound)
+			}
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+		currParentId = folder.Id
+	}
+
+	if folder == nil {
+		return nil, fmt.Errorf("%s: %w", op, ErrFolderNotFound)
+	}
+
+	return folder, nil
 }
 
 func (r *FolderRepository) Create(ctx context.Context, folder *domain.Folder) error {

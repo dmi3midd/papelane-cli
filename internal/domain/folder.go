@@ -26,6 +26,9 @@ type FolderRepository interface {
 	// GetByParentId returns a list of folders by their parent ID.
 	// It returns an empty slice if no folders are found with the given parent ID.
 	GetByParentId(ctx context.Context, parrentId string) ([]Folder, error)
+	// GetByPath returns a folder by its path.
+	// It returns the ErrFolderNotFound error if the folder does not exist.
+	GetByPath(ctx context.Context, path string) (*Folder, error)
 	// Create adds a new folder to the database.
 	Create(ctx context.Context, folder *Folder) error
 	// Update modifies an existing folder in the database.
