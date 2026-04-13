@@ -24,6 +24,9 @@ type FileRepository interface {
 	// GetById returns a file by its ID.
 	// It returns the ErrFileNotFound error if the file does not exist.
 	GetById(ctx context.Context, id string) (*File, error)
+	// GetByNameAndParentId returns a file by its name and parent ID.
+	// It returns the ErrFileNotFound error if the file does not exist.
+	GetByNameAndParentId(ctx context.Context, name string, parentId string) (*File, error)
 	// GetByParentId returns a list of files by their parent ID.
 	// It returns an empty slice if no files are found with the given parent ID.
 	GetByParentId(ctx context.Context, parentId string) ([]File, error)

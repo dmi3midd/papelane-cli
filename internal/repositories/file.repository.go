@@ -56,6 +56,24 @@ func (r *FileRepository) GetByParentId(ctx context.Context, parentId string) ([]
 	return files, nil
 }
 
+func (r *FileRepository) GetByNameAndParentId(ctx context.Context, name string, parentId string) (*domain.File, error) {
+	op := "FileRepository.GetByNameAndParentId"
+	query := `
+	SELECT id, tg_msg_id, tg_file_id, parent_id, name, size, mime_type, created_at, updated_at 
+	FROM files 
+	WHERE name = $1 AND parent_id = $2
+	`
+	var file domain.File
+	err := r.db.GetContext(ctx, &file, query, name, parentId)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("%s: %w", op, ErrFileNotFound)
+		}
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	return &file, nil
+}
+
 func (r *FileRepository) Create(ctx context.Context, file *domain.File) error {
 	op := "FileRepository.Create"
 	query := `
