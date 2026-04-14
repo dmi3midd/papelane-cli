@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	client     *telegrampkg.Client
+	client     telegrampkg.Client
 	db         database.Service
 	folderRepo domain.FolderRepository
 	fileRepo   domain.FileRepository
@@ -39,23 +39,26 @@ var RootCmd = &cobra.Command{
 			return err
 		}
 
+		// Initialize database and repositories
 		dbPath := config.GlobalConfig.GetString("dbPath")
 		if dbPath != "" {
 			db = database.New(dbPath)
 		}
-
 		folderRepo = repositories.NewFolderRepository(db.GetDB())
 		fileRepo = repositories.NewFileRepository(db.GetDB())
 
+		// Initialize Telegram client
 		botToken := config.GlobalConfig.GetString("botToken")
 		port := config.GlobalConfig.GetInt("port")
+		var err error
 		if botToken != "" && port != 0 {
-			client = telegrampkg.NewClient(botToken, fmt.Sprintf("http://localhost:%d", port))
+			client, err = telegrampkg.NewTelegramClient(botToken, fmt.Sprintf("http://localhost:%d", port))
+			if err != nil {
+				fmt.Printf("Error creating Telegram client: %v\n", err)
+				return err
+			}
 		}
 
-		return nil
-	},
-	PostRunE: func(cmd *cobra.Command, args []string) error {
 		return nil
 	},
 }

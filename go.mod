@@ -6,6 +6,7 @@ require (
 	github.com/rs/xid v1.6.0
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
+	gopkg.in/telebot.v4 v4.0.0-beta.7
 )
 
 require (
@@ -13,7 +14,6 @@ require (
 	github.com/sethvargo/go-retry v0.3.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
-	gopkg.in/telebot.v4 v4.0.0-beta.7 // indirect
 )
 
 require (

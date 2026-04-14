@@ -1,12 +1,9 @@
 package commands
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"papelane-cli/internal/config"
-	"papelane-cli/internal/database"
-	"papelane-cli/internal/telegrampkg"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
@@ -62,10 +59,9 @@ var initCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalf("Error while execute init cmd: %v", err)
 		}
-
-		db = database.New(cfg.DbPath)
-
-		client = telegrampkg.NewClient(botToken, fmt.Sprintf("http://localhost:%d", port))
+		if err != nil {
+			log.Fatalf("Error while execute init cmd: %v", err)
+		}
 		err = client.Ping()
 		if err != nil {
 			log.Fatalf("Error while execute init cmd: %v", err)
