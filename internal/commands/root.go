@@ -76,6 +76,7 @@ func Init(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(mkdirCmd)
 	rootCmd.AddCommand(cdCmd)
 	rootCmd.AddCommand(rmdCmd)
+	rootCmd.AddCommand(rmfCmd)
 	rootCmd.AddCommand(lsCmd)
 	rootCmd.AddCommand(uploadCmd)
 
