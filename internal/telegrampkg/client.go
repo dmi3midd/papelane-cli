@@ -16,6 +16,7 @@ type Client interface {
 	Ping() error
 	UploadFile(filePath string, fileInfo os.FileInfo) (*UploadedFile, error)
 	DownloadFile(tgFileId string, destPath string) error
+	DeleteFile(tgFileId string) error
 }
 
 type TelegramClient struct {
@@ -124,6 +125,20 @@ func (c *TelegramClient) DownloadFile(tgFileId string, destPath string) error {
 		if err != nil {
 			return fmt.Errorf("failed to copy (docker cp) and download file from Telegram: %v", err)
 		}
+	}
+	return nil
+}
+
+func (c *TelegramClient) DeleteFile(tgFileId string) error {
+	file, err := c.bot.FileByID(tgFileId)
+	if err != nil {
+		return fmt.Errorf("failed to get file info (or download file to cache): %v", err)
+	}
+	containerName := config.GlobalConfig.GetString("containerName")
+	containerFilePath := fmt.Sprintf("/var/lib/telegram-bot-api/%s/%s", c.botToken, file.FilePath)
+	cmd := exec.Command("docker", "exec", containerName, "rm", "-f", containerFilePath)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to delete file from Telegram: %v", err)
 	}
 	return nil
 }

@@ -36,6 +36,9 @@ var rmfCmd = &cobra.Command{
 		if err := fileRepo.Delete(ctx, candidate.Id); err != nil {
 			return fmt.Errorf("Failed to delete file: %v", err)
 		}
+		if err := client.DeleteFile(candidate.TgFileId); err != nil {
+			return fmt.Errorf("Failed to delete file from Telegram: %v", err)
+		}
 
 		return nil
 	},
