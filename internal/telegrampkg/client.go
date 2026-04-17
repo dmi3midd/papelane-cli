@@ -17,6 +17,7 @@ type Client interface {
 	UploadFile(filePath string, fileInfo os.FileInfo) (*UploadedFile, error)
 	DownloadFile(tgFileId string, destPath string) error
 	DeleteFile(tgFileId string) error
+	CleanCache() error
 }
 
 type TelegramClient struct {
@@ -139,6 +140,16 @@ func (c *TelegramClient) DeleteFile(tgFileId string) error {
 	cmd := exec.Command("docker", "exec", containerName, "rm", "-f", containerFilePath)
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("failed to delete file from Telegram: %v", err)
+	}
+	return nil
+}
+
+func (c *TelegramClient) CleanCache() error {
+	containerName := config.GlobalConfig.GetString("containerName")
+	cachePath := fmt.Sprintf("/var/lib/telegram-bot-api/%s/*", c.botToken)
+	cmd := exec.Command("docker", "exec", containerName, "sh", "-c", fmt.Sprintf("rm -rf %s", cachePath))
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to clean the cache: %v", err)
 	}
 	return nil
 }

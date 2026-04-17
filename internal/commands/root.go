@@ -80,6 +80,7 @@ func Init(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(lsCmd)
 	rootCmd.AddCommand(uploadCmd)
 	rootCmd.AddCommand(downloadCmd)
+	rootCmd.AddCommand(cleancCmd)
 
 	initCmd.Flags().String("apid", "", "Your TELEGRAM_API_ID")
 	initCmd.Flags().String("apih", "", "Your TELEGRAM_API_HASH")
