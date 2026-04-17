@@ -79,6 +79,7 @@ func Init(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(rmfCmd)
 	rootCmd.AddCommand(lsCmd)
 	rootCmd.AddCommand(uploadCmd)
+	rootCmd.AddCommand(downloadCmd)
 
 	initCmd.Flags().String("apid", "", "Your TELEGRAM_API_ID")
 	initCmd.Flags().String("apih", "", "Your TELEGRAM_API_HASH")
@@ -95,4 +96,6 @@ func Init(rootCmd *cobra.Command) {
 
 	lsCmd.Flags().BoolVarP(&filesFlag, "files", "f", false, "List files in the current directory")
 	lsCmd.Flags().BoolVarP(&dirsFlag, "dirs", "d", false, "List directories in the current directory")
+
+	downloadCmd.Flags().String("out", "", "Local path to download file")
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"os/exec"
 	"papelane-cli/internal/config"
 	"strings"
 	"time"
@@ -14,6 +15,7 @@ import (
 type Client interface {
 	Ping() error
 	UploadFile(filePath string, fileInfo os.FileInfo) (*UploadedFile, error)
+	DownloadFile(tgFileId string, destPath string) error
 }
 
 type TelegramClient struct {
@@ -98,4 +100,30 @@ func (c *TelegramClient) UploadFile(filePath string, fileInfo os.FileInfo) (*Upl
 		Size:     int(document.FileSize),
 		MimeType: document.MIME,
 	}, nil
+}
+
+func (c *TelegramClient) DownloadFile(tgFileId string, destPath string) error {
+	file, err := c.bot.FileByID(tgFileId)
+	if err != nil {
+		return fmt.Errorf("failed to get file info (or download file to cache): %v", err)
+	}
+
+	containerName := config.GlobalConfig.GetString("containerName")
+
+	// Get path to file inside container
+	// Local Bot API without --local flag stores files in subfolders:
+	// /var/lib/telegram-bot-api/<botToken>/<file.FilePath>
+	containerFilePath := fmt.Sprintf("/var/lib/telegram-bot-api/%s/%s", c.botToken, file.FilePath)
+
+	// Use docker cp for instant file copying,
+	// this solves any problems with user access rights to the volume
+	cmd := exec.Command("docker", "cp", fmt.Sprintf("%s:%s", containerName, containerFilePath), destPath)
+	if err := cmd.Run(); err != nil {
+		// HTTP download as a fallback (if the container is not available locally)
+		err = c.bot.Download(&file, destPath)
+		if err != nil {
+			return fmt.Errorf("failed to copy (docker cp) and download file from Telegram: %v", err)
+		}
+	}
+	return nil
 }
