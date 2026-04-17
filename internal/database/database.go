@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 
 	"papelane-cli/internal/migrations"
@@ -43,7 +44,14 @@ func New(DBPath string) Service {
 		return dbInstance
 	}
 
-	db, err := sqlx.Open("sqlite3", DBPath)
+	dsn := DBPath
+	if !strings.Contains(dsn, "?") {
+		dsn += "?_foreign_keys=on"
+	} else if !strings.Contains(dsn, "_foreign_keys=") && !strings.Contains(dsn, "_fk=") {
+		dsn += "&_foreign_keys=on"
+	}
+
+	db, err := sqlx.Open("sqlite3", dsn)
 	if err != nil {
 		// This will not be a connection error, but a DSN parse error or
 		// another initialization error.
