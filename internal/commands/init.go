@@ -59,9 +59,6 @@ var initCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalf("Error while execute init cmd: %v", err)
 		}
-		if err != nil {
-			log.Fatalf("Error while execute init cmd: %v", err)
-		}
 		err = client.Ping()
 		if err != nil {
 			log.Fatalf("Error while execute init cmd: %v", err)
