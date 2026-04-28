@@ -1,7 +1,6 @@
 package dockerpkg
 
 import (
-	"fmt"
 	"log"
 	"os/exec"
 
@@ -23,8 +22,7 @@ func PullImage() {
 	// cmd.Stdout = os.Stdout
 	// cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
-		log.Printf("error while pulling image: %v\n", err)
+		log.Printf("failed to pull image: %v\n", err)
 		return
 	}
-	fmt.Println("Image pulled successfully.")
 }

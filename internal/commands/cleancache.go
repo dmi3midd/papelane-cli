@@ -16,7 +16,6 @@ var cleancCmd = &cobra.Command{
 		if err := client.CleanCache(); err != nil {
 			return fmt.Errorf("failed to clean the cache: %v", err)
 		}
-		fmt.Println("Cache cleaned successfully")
 		return nil
 	},
 }

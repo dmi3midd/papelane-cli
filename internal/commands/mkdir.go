@@ -34,10 +34,10 @@ var mkdirCmd = &cobra.Command{
 		// check if the directory already exists in the current directory
 		_, err := folderRepo.GetByNameAndParentId(ctx, newDir, parentId)
 		if err == nil {
-			return fmt.Errorf("Directory '%s' already exists in the current directory", newDir)
+			return fmt.Errorf("directory '%s' already exists in the current directory", newDir)
 		}
 		if err != nil && !errors.Is(err, repositories.ErrFolderNotFound) {
-			return fmt.Errorf("Failed to get directory: %v", err)
+			return fmt.Errorf("failed to get directory: %v", err)
 		}
 
 		// create a new directory
@@ -49,7 +49,7 @@ var mkdirCmd = &cobra.Command{
 			UpdatedAt: time.Now(),
 		}
 		if err := folderRepo.Create(ctx, folder); err != nil {
-			return fmt.Errorf("Failed to create directory: %v", err)
+			return fmt.Errorf("failed to create directory: %v", err)
 		}
 
 		// if the flag is set, go to the newly created directory
@@ -62,9 +62,9 @@ var mkdirCmd = &cobra.Command{
 			}); err != nil {
 				return err
 			}
-			fmt.Printf("Directory '%s' created successfully.\n", newCurrDirName)
+			fmt.Printf("directory '%s' created successfully\n", newCurrDirName)
 		} else {
-			fmt.Printf("Directory '%s' created successfully.\n", path.Join(currentDirName, newDir))
+			fmt.Printf("directory '%s' created successfully\n", path.Join(currentDirName, newDir))
 		}
 
 		return nil

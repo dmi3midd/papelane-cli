@@ -26,14 +26,14 @@ var uploadCmd = &cobra.Command{
 		filePath := args[0]
 		ostat, err := os.Stat(filePath)
 		if err != nil {
-			return fmt.Errorf("Failed to get file info: %v", err)
+			return fmt.Errorf("failed to get file info: %v", err)
 		}
 		if !ostat.Mode().IsRegular() {
-			return fmt.Errorf("Path is not a regular file: %s", filePath)
+			return fmt.Errorf("path is not a regular file: %s", filePath)
 		}
 		uploadedFile, err := client.UploadFile(filePath, ostat)
 		if err != nil {
-			return fmt.Errorf("Failed to upload file: %v", err)
+			return fmt.Errorf("failed to upload file: %v", err)
 		}
 		ctx := cmd.Context()
 		file := domain.File{
@@ -48,7 +48,7 @@ var uploadCmd = &cobra.Command{
 			UpdatedAt: time.Now(),
 		}
 		if err = fileRepo.Create(ctx, &file); err != nil {
-			return fmt.Errorf("Failed to create file record: %v", err)
+			return fmt.Errorf("failed to create file record: %v", err)
 		}
 
 		fmt.Printf("File uploaded successfully: %s\n", uploadedFile.Name)

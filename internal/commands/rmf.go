@@ -28,15 +28,15 @@ var rmfCmd = &cobra.Command{
 		candidate, err := fileRepo.GetByNameAndParentId(ctx, targetDir, ids[len(ids)-1])
 		if err != nil {
 			if errors.Is(err, repositories.ErrFileNotFound) {
-				return fmt.Errorf("File '%s' does not exist in the current directory", targetDir)
+				return fmt.Errorf("file '%s' does not exist in the current directory", targetDir)
 			}
-			return fmt.Errorf("Failed to get file: %v", err)
+			return fmt.Errorf("failed to get file: %v", err)
 		}
 		if err := fileRepo.Delete(ctx, candidate.Id); err != nil {
-			return fmt.Errorf("Failed to delete file: %v", err)
+			return fmt.Errorf("failed to delete file: %v", err)
 		}
 		if err := client.DeleteFile(candidate.TgFileId); err != nil {
-			return fmt.Errorf("Failed to delete file from Telegram: %v", err)
+			return fmt.Errorf("failed to delete file from Telegram: %v", err)
 		}
 
 		return nil

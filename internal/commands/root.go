@@ -6,6 +6,7 @@ import (
 	"github.com/dmi3midd/papelane-cli/internal/config"
 	"github.com/dmi3midd/papelane-cli/internal/database"
 	"github.com/dmi3midd/papelane-cli/internal/domain"
+	"github.com/dmi3midd/papelane-cli/internal/logger"
 	"github.com/dmi3midd/papelane-cli/internal/repositories"
 	"github.com/dmi3midd/papelane-cli/internal/telegrampkg"
 
@@ -19,8 +20,6 @@ var (
 	fileRepo   domain.FileRepository
 )
 
-// rootCmd represents the base command when called without any subcommands
-// example: papelane
 var RootCmd = &cobra.Command{
 	Use:   "papelane",
 	Short: "Papelane-CLI is a tool that turns your Telegram bot into cloud storage.",
@@ -33,11 +32,11 @@ var RootCmd = &cobra.Command{
 			return nil
 		}
 		if err := config.ReadInGlobalCfg(); err != nil {
-			fmt.Printf("Error reading global config: %v\n", err)
+			logger.Log.Error("failed to read global config", "error", err)
 			return err
 		}
 		if err := config.ReadInCurrDirCfg(); err != nil {
-			fmt.Printf("Error reading current directory config: %v\n", err)
+			logger.Log.Error("failed to read current directory config", "error", err)
 			return err
 		}
 
@@ -56,7 +55,7 @@ var RootCmd = &cobra.Command{
 		if botToken != "" && port != 0 {
 			client, err = telegrampkg.NewTelegramClient(botToken, fmt.Sprintf("http://localhost:%d", port))
 			if err != nil {
-				fmt.Printf("Error creating Telegram client: %v\n", err)
+				logger.Log.Error("failed to create Telegram client", "error", err)
 				return err
 			}
 		}

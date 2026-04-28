@@ -33,8 +33,7 @@ func RunDockerContainer() error {
 
 	cmd := exec.Command("docker", args...)
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("error while running container: %v", err)
+		return fmt.Errorf("failed to run container: %v", err)
 	}
-	fmt.Println("Container run successfully.")
 	return nil
 }

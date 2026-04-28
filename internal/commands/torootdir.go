@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"fmt"
+
 	"github.com/dmi3midd/papelane-cli/internal/config"
 
 	"github.com/spf13/cobra"
@@ -16,7 +18,7 @@ var toRootCmd = &cobra.Command{
 			CurrentDirName: "root",
 			CurrentDirId:   "root",
 		}); err != nil {
-			return err
+			return fmt.Errorf("failed to write current directory config: %v", err)
 		}
 		return nil
 	},

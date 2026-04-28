@@ -28,12 +28,12 @@ var rmdCmd = &cobra.Command{
 		candidate, err := folderRepo.GetByNameAndParentId(ctx, targetDir, ids[len(ids)-1])
 		if err != nil {
 			if errors.Is(err, repositories.ErrFolderNotFound) {
-				return fmt.Errorf("Directory '%s' does not exist in the current directory", targetDir)
+				return fmt.Errorf("directory '%s' does not exist in the current directory", targetDir)
 			}
-			return fmt.Errorf("Failed to get directory: %v", err)
+			return fmt.Errorf("failed to get directory: %v", err)
 		}
 		if err := folderRepo.Delete(ctx, candidate.Id); err != nil {
-			return fmt.Errorf("Failed to delete directory: %v", err)
+			return fmt.Errorf("failed to delete directory: %v", err)
 		}
 
 		return nil

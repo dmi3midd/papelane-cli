@@ -30,25 +30,25 @@ var lsCmd = &cobra.Command{
 		if !filesFlag && !dirsFlag {
 			files, err = fileRepo.GetByParentId(ctx, ids[len(ids)-1])
 			if err != nil {
-				return fmt.Errorf("Failed to get files: %w", err)
+				return fmt.Errorf("failed to get files: %w", err)
 			}
 			folders, err = folderRepo.GetByParentId(ctx, ids[len(ids)-1])
 			if err != nil {
-				return fmt.Errorf("Failed to get folders: %w", err)
+				return fmt.Errorf("failed to get folders: %w", err)
 			}
 		}
 
 		if filesFlag {
 			files, err = fileRepo.GetByParentId(ctx, ids[len(ids)-1])
 			if err != nil {
-				return fmt.Errorf("Failed to get files: %w", err)
+				return fmt.Errorf("failed to get files: %w", err)
 			}
 		}
 
 		if dirsFlag {
 			folders, err = folderRepo.GetByParentId(ctx, ids[len(ids)-1])
 			if err != nil {
-				return fmt.Errorf("Failed to get folders: %w", err)
+				return fmt.Errorf("failed to get folders: %w", err)
 			}
 		}
 

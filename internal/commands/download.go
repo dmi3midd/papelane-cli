@@ -30,20 +30,20 @@ var downloadCmd = &cobra.Command{
 		candidate, err := fileRepo.GetByNameAndParentId(ctx, target, ids[len(ids)-1])
 		if err != nil {
 			if errors.Is(err, repositories.ErrFileNotFound) {
-				return fmt.Errorf("File not found in the current directory")
+				return fmt.Errorf("file '%s' not found in the current directory", target)
 			}
-			return fmt.Errorf("Failed to get file info: %v", err)
+			return fmt.Errorf("failed to get file info: %v", err)
 		}
 
 		out, err := cmd.Flags().GetString("out")
 		if err != nil {
-			return fmt.Errorf("Failed to get out path: %v", err)
+			return fmt.Errorf("failed to get out path: %v", err)
 		}
 		var dest string
 		if out == "" {
 			dest, err = os.UserHomeDir()
 			if err != nil {
-				return fmt.Errorf("Failed to get home path: %v", err)
+				return fmt.Errorf("failed to get home path: %v", err)
 			}
 			dest = filepath.Join(dest, "Downloads")
 		} else {
