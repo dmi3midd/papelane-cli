@@ -12,10 +12,8 @@ import (
 )
 
 // simple rmf command for removing a file
-// need to add complex logic for removing a file like:
-// rmf root/folder1/folder2/file.txt (abs path) or rmf file.txt (relative path)
-// also need(optional) to add a flag for going to the parent directory after removing the file
-// now it removes the file in the current directory and if the flag is set, it goes to the parent directory
+// example: rmf file.txt (in vfs current directory)
+// in development: rmf path/to/file.txt (in vfs absolute path)
 var rmfCmd = &cobra.Command{
 	Use:   "rmf",
 	Short: "Remove a file",

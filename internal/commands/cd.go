@@ -9,7 +9,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// simple cd command for changing the current directory
+// cd command for changing the vfs current directory
+// example: cd folder1/folder2
+// example: cd ..
 var cdCmd = &cobra.Command{
 	Use:   "cd",
 	Short: "Change the current directory",

@@ -10,6 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// ls command for listing the contents of the vfs current directory
+// example: ls -f (list files only)
+// example: ls -d (list directories only)
+// example: ls (list both files and directories)
 var lsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List directories in the current directory",

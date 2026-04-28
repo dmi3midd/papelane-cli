@@ -9,6 +9,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// init command for initializing the application
+// example: init --apid <api_id> --apih <api_hash> --token <bot_token> --cid <chat_id> --port <port> --sa <stop_always>
+// port and sa flags are unneccessary, they're just for docker and set default values if not provided
 var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initializes application using your api hash and api id.",

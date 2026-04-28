@@ -8,6 +8,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// curr command for printing the current directory in the vfs.
+// example: curr
 var currCmd = &cobra.Command{
 	Use:   "curr",
 	Short: "Prints the current directory in the Telegram Bot API (Local) storage.",

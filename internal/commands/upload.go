@@ -12,10 +12,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// simple upload command for uploading a file to the current directory
-// need to add complex logic for uploading a file like:
-// upload root/folder1/folder2/file.txt (abs path) or upload file.txt (relative path)
-// now it uploads the file to the current directory
+// upload command for uploading a file to the current directory
+// example: upload file.txt (on your local machine)
+// in development: upload /path/to/file.txt (on your local machine)
 var uploadCmd = &cobra.Command{
 	Use:   "upload",
 	Short: "Upload a file to the current directory",

@@ -12,6 +12,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// download command for downloading a file from the current directory.
+// example: download file.txt (default path is ~/Downloads)
+// example: download file.txt --out /path/to/download/or/other/folder
+// in development: download root/folder1/folder2/file.txt (abs path)
 var downloadCmd = &cobra.Command{
 	Use:   "download",
 	Short: "Download a file from the current directory",

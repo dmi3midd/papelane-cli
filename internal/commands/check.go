@@ -7,6 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// check command for checking if the docker is ready
+// example: check
 var checkCmd = &cobra.Command{
 	Use:   "check",
 	Short: "Check if the docker is ready",

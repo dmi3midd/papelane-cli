@@ -6,6 +6,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// toRootCmd is a command for setting the current directory to root
+// example: root
 var toRootCmd = &cobra.Command{
 	Use:   "root",
 	Short: "Set the current directory in the storage to root",

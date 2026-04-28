@@ -16,10 +16,8 @@ import (
 )
 
 // simple mkdir command for creating a new directory
-// need to add complex logic for creating a new directory like:
-// mkdir root/folder1/folder2/folder3 (abs path) or mkdir folder3 (relative path)
-// also need(optional) to add a flag for going to the newly created directory
-// now it creates a new directory in the current directory and if the flag is set, it goes to the newly created directory
+// example: mkdir folder (in vfs current directory)
+// in development: mkdir path/to/folder (in vfs absolute path)
 var mkdirCmd = &cobra.Command{
 	Use:   "mkdir",
 	Short: "Create a new directory",

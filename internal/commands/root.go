@@ -19,6 +19,8 @@ var (
 	fileRepo   domain.FileRepository
 )
 
+// rootCmd represents the base command when called without any subcommands
+// example: papelane
 var RootCmd = &cobra.Command{
 	Use:   "papelane",
 	Short: "Papelane-CLI is a tool that turns your Telegram bot into cloud storage.",

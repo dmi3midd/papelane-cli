@@ -7,6 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// ping command for checking if the Telegram Bot API is ready
+// example: ping
 var pingCmd = &cobra.Command{
 	Use:   "ping",
 	Short: "Check if the Telegram Bot API is ready",
