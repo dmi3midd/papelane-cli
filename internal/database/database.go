@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"papelane-cli/internal/migrations"
+	"github.com/dmi3midd/papelane-cli/internal/migrations"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"

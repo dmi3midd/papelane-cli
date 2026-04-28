@@ -3,11 +3,11 @@ package commands
 import (
 	"fmt"
 
-	"papelane-cli/internal/config"
-	"papelane-cli/internal/database"
-	"papelane-cli/internal/domain"
-	"papelane-cli/internal/repositories"
-	"papelane-cli/internal/telegrampkg"
+	"github.com/dmi3midd/papelane-cli/internal/config"
+	"github.com/dmi3midd/papelane-cli/internal/database"
+	"github.com/dmi3midd/papelane-cli/internal/domain"
+	"github.com/dmi3midd/papelane-cli/internal/repositories"
+	"github.com/dmi3midd/papelane-cli/internal/telegrampkg"
 
 	"github.com/spf13/cobra"
 )

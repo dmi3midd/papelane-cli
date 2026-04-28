@@ -4,10 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"papelane-cli/internal/config"
-	"papelane-cli/internal/repositories"
 	"path/filepath"
 	"strings"
+
+	"github.com/dmi3midd/papelane-cli/internal/config"
+	"github.com/dmi3midd/papelane-cli/internal/repositories"
 
 	"github.com/spf13/cobra"
 )

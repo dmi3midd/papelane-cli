@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
-	"papelane-cli/internal/config"
+
+	"github.com/dmi3midd/papelane-cli/internal/config"
 )
 
 func IsImageInstalled() bool {

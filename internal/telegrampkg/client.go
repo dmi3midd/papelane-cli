@@ -5,9 +5,10 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"papelane-cli/internal/config"
 	"strings"
 	"time"
+
+	"github.com/dmi3midd/papelane-cli/internal/config"
 
 	"gopkg.in/telebot.v4"
 )

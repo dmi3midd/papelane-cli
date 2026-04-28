@@ -2,7 +2,8 @@ package main
 
 import (
 	"log"
-	"papelane-cli/internal/commands"
+
+	"github.com/dmi3midd/papelane-cli/internal/commands"
 )
 
 func main() {

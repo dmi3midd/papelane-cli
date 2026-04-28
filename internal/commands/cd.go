@@ -3,8 +3,9 @@ package commands
 import (
 	"fmt"
 	"os"
-	"papelane-cli/internal/config"
 	"strings"
+
+	"github.com/dmi3midd/papelane-cli/internal/config"
 
 	"github.com/spf13/cobra"
 )

@@ -5,7 +5,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"papelane-cli/internal/domain"
+
+	"github.com/dmi3midd/papelane-cli/internal/domain"
 
 	"github.com/jmoiron/sqlx"
 )

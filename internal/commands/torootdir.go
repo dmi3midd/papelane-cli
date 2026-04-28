@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"papelane-cli/internal/config"
+	"github.com/dmi3midd/papelane-cli/internal/config"
 
 	"github.com/spf13/cobra"
 )

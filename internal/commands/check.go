@@ -2,7 +2,8 @@ package commands
 
 import (
 	"fmt"
-	"papelane-cli/internal/dockerpkg"
+
+	"github.com/dmi3midd/papelane-cli/internal/dockerpkg"
 
 	"github.com/spf13/cobra"
 )

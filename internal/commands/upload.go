@@ -3,10 +3,11 @@ package commands
 import (
 	"fmt"
 	"os"
-	"papelane-cli/internal/config"
-	"papelane-cli/internal/domain"
 	"strings"
 	"time"
+
+	"github.com/dmi3midd/papelane-cli/internal/config"
+	"github.com/dmi3midd/papelane-cli/internal/domain"
 
 	"github.com/rs/xid"
 	"github.com/spf13/cobra"

@@ -1,4 +1,4 @@
-module papelane-cli
+module github.com/dmi3midd/papelane-cli
 
 go 1.26.1
 

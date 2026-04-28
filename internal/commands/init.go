@@ -3,8 +3,9 @@ package commands
 import (
 	"log"
 	"os"
-	"papelane-cli/internal/config"
 	"path/filepath"
+
+	"github.com/dmi3midd/papelane-cli/internal/config"
 
 	"github.com/spf13/cobra"
 )
